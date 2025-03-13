@@ -9,3 +9,8 @@ export const HomeBody = styled.section`
 
   width: 80%;
 `;
+export const HomeHeader = styled.section`
+  width: 80%;
+  display: flex;
+  margin: 1rem auto;
+`;
