@@ -1,5 +1,5 @@
 import logo from "../../images/LogoBN.png";
-import "./Navbar.css";
+
 import { Button, ImageLogo, InputSpace, Nav } from "./NavbarStyled";
 
 export function Navbar() {

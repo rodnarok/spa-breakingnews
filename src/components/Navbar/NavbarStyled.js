@@ -6,7 +6,7 @@ export const Nav = styled.nav`
   align-items: center;
   width: 100%;
   padding: 1rem;
-  position: fixed;
+  //position: fixed;
   top: 0;
   background-color: #fff;
   z-index: 1;
