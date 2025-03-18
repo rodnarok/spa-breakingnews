@@ -17,3 +17,8 @@ export async function getTopNews() {
     console.log(error);
   }
 }
+
+export function searchNews(title) {
+  const response = axios.get(`${baseURL}/news/search?title=${title}`);
+  return response;
+}
