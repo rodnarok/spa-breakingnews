@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Card } from "../../components/Card/Card";
-import { Navbar } from "../../components/Navbar/Navbar";
+//import { Navbar } from "../../components/Navbar/Navbar";
 //import { news } from "../../Datas";
 import { getAllNews, getTopNews } from "../../services/newsServices";
 import { HomeBody, HomeHeader } from "./HomeStyled";
+import Cookies from "js-cookie";
 
 export default function Home() {
   const [news, setNews] = useState([]);
@@ -14,20 +15,21 @@ export default function Home() {
     setNews(newsResponse.data.results);
 
     const topNewsResponse = await getTopNews();
-    setTopNews(topNewsResponse.data.news);
+    setTopNews(topNewsResponse.data.post);
   }
 
   useEffect(() => {
     findNews();
   }, []);
 
+  //console.log(news);
   //console.log(topNews);
 
   return (
     <>
       <HomeHeader>
         <Card
-          top={true}
+          top={"true"}
           title={topNews.title}
           text={topNews.text}
           banner={topNews.banner}

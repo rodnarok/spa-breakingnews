@@ -1,20 +1,22 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import logo from "../../images/LogoBN.png";
 
-import { ErrorSpan, ImageLogo, InputSpace, Nav } from "./NavbarStyled";
+import {
+  ErrorSpan,
+  ImageLogo,
+  InputSpace,
+  Nav,
+  UserLoggedSpace,
+} from "./NavbarStyled";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../Button/Button";
-
-const searchSchema = z.object({
-  title: z
-    .string()
-    .nonempty({ message: "A pesquisa não pode ser vazia" })
-    .refine((value) => !/^\s*$/.test(value), {
-      message: "A pesquisa não pode conter somente espaços",
-    }),
-});
+import { searchSchema } from "../../schemas/searchSchema";
+import { userLogged } from "../../services/userServices";
+import { useContext, useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { UserContext } from "../../Context/UserContext";
 
 export function Navbar() {
   const {
@@ -26,12 +28,32 @@ export function Navbar() {
     resolver: zodResolver(searchSchema),
   });
   const navigate = useNavigate();
+  const { user, setUser } = useContext(UserContext);
 
   function onSearch(data) {
     const { title } = data;
     navigate(`/search/${title}`);
     reset();
   }
+
+  async function findUserLogged() {
+    try {
+      const response = await userLogged();
+      setUser(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function signout() {
+    Cookies.remove("token");
+    setUser(undefined);
+    navigate("/");
+  }
+
+  useEffect(() => {
+    if (Cookies.get("token")) findUserLogged();
+  }, []);
 
   return (
     <>
@@ -54,11 +76,21 @@ export function Navbar() {
           <ImageLogo src={logo} alt="Logo Breaking News" />
         </Link>
 
-        <Link to="/auth">
-          <Button type="button" text="Entrar">
-            Entrar
-          </Button>
-        </Link>
+        {user ? (
+          <UserLoggedSpace>
+            <Link to="/profile" style={{ textDecoration: "none" }}>
+              <h2>{user.name}</h2>
+            </Link>
+
+            <i className="bi bi-box-arrow-right" onClick={signout}></i>
+          </UserLoggedSpace>
+        ) : (
+          <Link to="/auth">
+            <Button type="button" text="Entrar">
+              Entrar
+            </Button>
+          </Link>
+        )}
       </Nav>
       {errors.title && <ErrorSpan> {errors.title.message}</ErrorSpan>}
       <Outlet />
